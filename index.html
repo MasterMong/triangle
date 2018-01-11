@@ -1,0 +1,87 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="assets/css/animate.css">
+        <link rel="stylesheet" href="assets/css/style.css">
+        <script src="assets/js/jquery.min.js"></script>
+    </head>
+    <body>
+        <div>
+            พื้นที่<input id="area" type="number"><br/>
+            ด้าน A <input id="sideA" type="number"><br/>
+            ด้าน B <input id="sideB" type="number"><br/>
+            ด้าน C <input id="sideC" type="number"><br/>
+            <input type="reset" value="ล้างค่า">
+            <button id="calc">คำนวน</button>
+        </div>
+        <hr>
+        <div>
+            <table>
+                <tr>
+                    <td>พื้นที่ =</td>
+                    <td id="">0</td>
+                </tr>
+                <tr>
+                    <td>ด้าน A =</td>
+                    <td id="">0</td>
+                </tr>
+                <tr>
+                    <td>ด้าน B =</td>
+                    <td id="">0</td>
+                </tr>
+                <tr>
+                    <td>ด้าน C =</td>
+                    <td id="">0</td>
+                </tr>
+            </table>
+        </div>
+        <hr>
+        <div>
+            <table>
+                <tr>
+                    <td>มุม A =</td>
+                    <td id="">0</td>
+                </tr>
+                <tr>
+                    <td>มุม B =</td>
+                    <td id="">0</td>
+                </tr>
+                <tr>
+                    <td>มุม C =</td>
+                    <td id="">0</td>
+                </tr>
+            </table>
+        </div>
+    </body>
+    <script>
+        txtInput = Array();
+        message = Array();
+        $("#calc").click(function(){
+            txtInput = [];
+            message['error'] = "";
+            countxtInput = 0;
+            txtInput[0] = $("#area").val();
+            txtInput[1] = $("#sideA").val();
+            txtInput[2] = $("#sideB").val();
+            txtInput[3] = $("#sideC").val();
+            console.log(txtInput);
+            for (i=0; i<4; i++) {
+                if (txtInput[i]) {
+                    countxtInput++;
+                }
+            }
+            if (countxtInput < 3) {
+                message['error'] = "ระบบุค่าให้ครบ 3 ค่า";
+            } else if (countxtInput > 3) {
+                message['error'] = "ระบบุค่าไม่ให้เกิน 3 ค่า";
+            } else if (message['error'] !== "") {
+                console.log(message['error']);                
+            } else {
+                console.log('gg');
+            }
+        });
+
+
+    </script>
+
+    </html>
