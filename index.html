@@ -3,63 +3,102 @@
         <meta charset="utf-8">
         <link rel="stylesheet" href="assets/css/animate.css">
         <link rel="stylesheet" href="assets/css/style.css">
+        <link rel="stylesheet" href="assets/css/bulma.css">
+        <link rel="stylesheet" href="assets/css/toastr.css">
+        
         <script src="assets/js/jquery.min.js"></script>
+        <script src="assets/js/toastr.min.js"></script>
     </head>
     <body>
-        <div>
-            พื้นที่<input id="area" type="number"><br/>
-            ด้าน A <input id="sideA" type="number"><br/>
-            ด้าน B <input id="sideB" type="number"><br/>
-            ด้าน C <input id="sideC" type="number"><br/>
-            <input type="reset" value="ล้างค่า">
-            <button id="calc">คำนวน</button>
-        </div>
-        <hr>
-        <div>
-            <table>
-                <tr>
-                    <td>พื้นที่ =</td>
-                    <td id="">0</td>
-                </tr>
-                <tr>
-                    <td>ด้าน A =</td>
-                    <td id="">0</td>
-                </tr>
-                <tr>
-                    <td>ด้าน B =</td>
-                    <td id="">0</td>
-                </tr>
-                <tr>
-                    <td>ด้าน C =</td>
-                    <td id="">0</td>
-                </tr>
-            </table>
-        </div>
-        <hr>
-        <div>
-            <table>
-                <tr>
-                    <td>มุม A =</td>
-                    <td id="">0</td>
-                </tr>
-                <tr>
-                    <td>มุม B =</td>
-                    <td id="">0</td>
-                </tr>
-                <tr>
-                    <td>มุม C =</td>
-                    <td id="">0</td>
-                </tr>
-            </table>
+        <div class="container">
+            <div class="columns">
+                <div class="column is-two-fifths animated bouncein">
+                    <center><img src="assets/img/img.png" width="80%"></center>
+
+                    <div class="field">
+                        <label class="label">พื้นที่</label>
+                        <div class="control">
+                            <input id="area" class="input" type="number">
+                        </div>
+                        <label class="label">ด้าน A </label>
+                        <div class="control">
+                                <input id="sideA" class="input" type="number" value=""><br/>
+                        </div>
+                        <label class="label">ด้าน B </label>
+                        <div class="control">
+                                <input id="sideB" class="input" type="number" value=""><br/>
+                        </div>
+                        <label class="label">ด้าน C </label>
+                        <div class="control">
+                                <input id="sideC" class="input" type="number" value=""><br/>
+                        </div>
+                    </div>
+
+                    <button id="calc" class="button is-primary">คำนวน</button>
+                    <button id="clear" class="button is-warning">ลบ</button>
+                </div>
+                <div class="column" >
+                    <canvas id="triangle" width="450px" height="400px" ></canvas>
+                    <div id="output">
+                        <table class="table">
+                            <tr>
+                                <td><b>พื้นที่</b></td>
+                                <td>=</td>
+                                <td id="resArea">0</td>
+                            </tr>
+                            <tr>
+                                <td><b>ด้าน A</b></td>
+                                <td>=</td>
+                                <td id="resA">0</td>
+                            </tr>
+                            <tr>
+                                <td><b>ด้าน B</b></td>
+                                <td>=</td>
+                                <td id="resB">0</td>
+                            </tr>
+                            <tr>
+                                <td><b>ด้าน C</b></td>
+                                <td>=</td>
+                                <td id="resC">0</td>
+                            </tr>
+                            <tr>
+                                <td><b>มุม A</b></td>
+                                <td>=</td>
+                                <td id="angleA">0</td>
+                            </tr>
+                            <tr>
+                                <td><b>มุม B</b></td>
+                                <td>=</td>
+                                <td id="angleB">0</td>
+                            </tr>
+                            <tr>
+                                <td><b>มุม C</b></td>
+                                <td>=</td>
+                                <td id="angleC">0</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            
+            </div> 
         </div>
     </body>
     <script>
-        txtInput = Array();
-        message = Array();
+        $("#output").hide();
+        var txtInput = Array();
+        var message = Array();
+        /*
+            รับค่า
+        */
+        $("#clear").click(function() {
+            $("#area").val("");
+            $("#sideA").val("");
+            $("#sideB").val("");
+            $("#sideC").val("");
+        });
         $("#calc").click(function(){
             txtInput = [];
-            message['error'] = "";
-            countxtInput = 0;
+            var countxtInput = 0;
             txtInput[0] = $("#area").val();
             txtInput[1] = $("#sideA").val();
             txtInput[2] = $("#sideB").val();
@@ -71,17 +110,204 @@
                 }
             }
             if (countxtInput < 3) {
-                message['error'] = "ระบบุค่าให้ครบ 3 ค่า";
+                runToastr("warning", "ระบบุตัวเลขให้ครบ 3 ค่า", "ล้มเหลว")
+                //console.log("Error ระบบุค่าให้ครบ 3 ค่า");
             } else if (countxtInput > 3) {
-                message['error'] = "ระบบุค่าไม่ให้เกิน 3 ค่า";
-            } else if (message['error'] !== "") {
-                console.log(message['error']);                
+                runToastr("warning", "ระบบุตัวเลขไม่ให้เกิน 3 ค่า", "ล้มเหลว")
+                //console.log("Error ระบบุค่าไม่ให้เกิน 3 ค่า");
             } else {
-                console.log('gg');
+                if (txtInput[0]){
+                    console.log("found Area");
+                } else {
+                    console.log("not found Area");
+                    if (checkSideByABC(txtInput[1], txtInput[2], txtInput[3]) !== true) {
+                        draw(txtInput[1], txtInput[2], txtInput[3]);
+                        getArea(txtInput[1], txtInput[2], txtInput[3]);
+                        getAngle(txtInput[1], txtInput[2], txtInput[3]);
+                    } else {
+
+                    }
+                }
             }
+            $("#triangle").removeClass("animated pulse")
+            $("#triangle").addClass("animated pulse")
+
         });
 
+        /*
+            ผลบวกของความยาวของสองด้านใดๆ ในรูปสามเหลี่ยม จะมากกว่าความยาวของด้านที่สามเสมอ 
+        */
 
+        function runToastr(type, message, title) {
+            toastr[type](message, title)
+        }
+
+        function checkSideByABC(a, b, c){
+            message['error'] = "";
+            console.log("fn checkSideByABC");
+            if ((Number(b)+Number(c)) <= Number(a)){
+                message['error'] += "A";                
+            }
+            if ((Number(a)+Number(c)) <= Number(b)){
+                message['error'] += "B";                
+            }
+            if ((Number(a)+Number(b)) <= Number(c)){
+                message['error'] += "C";                
+            }
+            if (a < 0 || b < 0 || c < 0) {
+                message['error'] += "<0";  
+            }
+            console.log(message['error']);
+            if (message['error']) {
+                runToastr("error", "ค่าที่คุณระบุไม่สามารถสร้างเป็นรูปสามเหลี่ยมได้", "ล้มเหลว")
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        /*
+            หาพื้นที่
+        */
+        function getArea(a, b, c) {
+            console.log("fn getAreaAndAngle");
+            $("#output").show();
+            //Area
+            var s = (Number(a) + Number(b) + Number(c))/2;
+            var res = (s*(s-a)*(s-b)*(s-c));
+            var area = Math.sqrt(res);
+            console.log("area : " + area);
+            $('#resArea').html(area);
+            $('#resA').html(a);
+            $('#resB').html(b);
+            $('#resC').html(c);
+            
+        }
+
+        function getAngle(c,a,b) { //ต้องสลับ
+            var cosA = ((b*b)+(c*c)-(a*a))/(2*(b*c));
+            var cosB = ((a*a)+(c*c)-(b*b))/(2*(a*c));
+            var cosC = ((a*a)+(b*b)-(c*c))/(2*(a*b));
+            $('#angleA').html(((Math.acos(cosA))*180/Math.PI));
+            $('#angleB').html(((Math.acos(cosB))*180/Math.PI));
+            $('#angleC').html(((Math.acos(cosC))*180/Math.PI));
+        }
+        getCoordinates = function(a, b, c) {
+            var bsq = b*b;
+            var x = (bsq - c*c) / (2.0 * a) + a / 2.0;
+            var xsq = x*x;
+            return (xsq < bsq) ? {x: x, y: Math.sqrt(bsq - xsq)} : null;
+        };
+
+        draw = function(a,b,c) {
+            var canvas = $('#triangle')[0];
+            var ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#FFB900';    // a warm skin tone
+            ctx.strokeStyle = '#CA5010'; 
+            ctx.lineWidth = 5;
+
+            var scale = 250/((Math.max(a,b,c)));
+            var Ra = a * scale,
+                Rb = b * scale,
+                Rc = c * scale;
+
+            Ox = 150;
+            Oy = 100;
+
+            var x0 = 10, y0 = 10;
+            var x1 = x0 + Ra, y1 = y0;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.globalAlpha = 1;
+            ctx.beginPath();
+            ctx.moveTo(Ox+x0, Oy+y0); //B
+            ctx.lineTo(Ox+x1, Oy+y1); //A
+
+            var corner = getCoordinates(Ra, Rb, Rc);
+            if (corner) {
+                var x2 = x0 + corner.x, y2 = y0 + corner.y;
+                ctx.lineTo(Ox+x2, Oy+y2); //C
+                ctx.closePath();
+
+                var display = function(n) { return parseFloat((n / scale).toFixed(8)); };
+                $('.coords').text('('+display(corner.x)+', '+display(corner.y)+')');
+
+                var dx2sq = corner.x * corner.x;
+                var dy2sq = corner.y * corner.y;
+
+            }
+            ctx.stroke();
+            ctx.fill();
+            
+            ctx.fillStyle="#000000";
+            ctx.font = "14px Arial";
+            ctx.fillText('B', (Ox+x0)-10, (Oy+y0)-10);
+            ctx.fillText('A', (Ox+x1)+10, (Oy+y1)-10);
+            ctx.fillText('C', (Ox+x2)-5, (Oy+y2)+20);
+            ctx.globalAlpha = 0.2;
+            ctx.fillText("AB =" + a, 400,340);
+            ctx.fillText("BC =" + b, 400,360);
+            ctx.fillText("AC =" + c, 400,380);
+            
+        };
+        
+        /*
+        function makeTriangle(a, b, c) {
+            var R1nvas = document.getElementById('triangle');
+            var ctx = R1nvas.getContext('2d');
+            ctx.clearRect(0, 0, R1nvas.width, R1nvas.height);
+            var scale = 310/(Math.max(a,b,c));
+            var R1=a*scale, R2=b*scale, R3=c*scale;
+            
+            var Ax=0, Ay=0;
+            var Bx=R2, By=0;
+            var Cx=(((R3*R1)+(R2*R2))-(R1*R1))/(R2*2);
+            var Cy=Math.sqrt((R3*R3)-(Cx*Cx));
+            var Ox = (R1nvas.width / 2) - (Bx/2);
+            var Oy = (R1nvas.height / 2) + (Cy/2);
+            
+            ctx.fillStyle="#000000";
+            ctx.font = "14px Arial";
+            ctx.fillText('A', (Ox+Cx)-5,(Oy-Cy)-10);
+            ctx.fillText('B', (Ox+Bx)+10,(Oy-By)+10);
+            ctx.fillText('C', (Ox+Ax)-15,(Oy-Ay)+10);
+
+            ctx.font = "12px Arial";
+            ctx.fillText("AB =" + a, 300,20);
+            ctx.fillText("BC =" + b, 300,40);
+            ctx.fillText("AC =" + c, 300,60);
+
+            ctx.fillText('mask1', Ox+Ax, Oy-Ay);
+            ctx.fillText('mask2', Ox+Bx, Oy-By);
+            ctx.fillText('mask3', Ox+Cx, Oy-Cy);
+            ctx.globalAlpha = 0.2;
+            ctx.beginPath();
+            ctx.moveTo(Ox+Ax, Oy-Ay);
+            ctx.lineTo(Ox+Bx, Oy-By);
+            ctx.lineTo(Ox+Cx, Oy-Cy);
+            ctx.closePath();
+            ctx.fillStyle="#2ecc71"; 
+            ctx.lineWidth=4;
+            ctx.stroke(); ctx.fill();
+            console.log();
+        }
+        */
+        toastr.options = {
+            "closeButton": true,
+            "debug": false,
+            "newestOnTop": false,
+            "progressBar": true,
+            "positionClass": "toast-top-center",
+            "preventDuplicates": false,
+            "onclick": null,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        }
     </script>
 
     </html>
