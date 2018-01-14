@@ -14,7 +14,6 @@
             <div class="columns">
                 <div class="column is-two-fifths animated bouncein">
                     <center><img src="assets/img/img.png" width="80%"></center>
-
                     <div class="field">
                         <label class="label">พื้นที่</label>
                         <div class="control">
@@ -33,9 +32,21 @@
                                 <input id="sideC" class="input" type="number" value=""><br/>
                         </div>
                     </div>
-
                     <button id="calc" class="button is-primary">คำนวน</button>
                     <button id="clear" class="button is-warning">ลบ</button>
+                    <div id="history" class="animated bouncein">
+                        <br>
+                        <table class="table" id="historyTable">
+                            <tr>
+                                <th>ลำดับ</th>
+                                <th>พื้นที่</th>
+                                <th>เส้น AB</th>
+                                <th>เส้น BC</th>
+                                <th>เส้น AC</th>
+                            </tr>
+
+                        </table>
+                    </div>
                 </div>
                 <div class="column" id="display">
                     <canvas id="triangle" width="450px" height="400px" ></canvas>
@@ -85,10 +96,12 @@
     </body>
     <script>
         $("#display").hide();
+        $("#history").hide();
         var txtInput = Array();
         var message = Array();
         var missSide = "";
         var maxDec = "";
+        var calcCount = 0;
         
         /*
             รับค่า
@@ -103,8 +116,10 @@
             $("#display").hide();
             missSide = "";
             txtInput = [];
-            maxDec = 2; //ทศนิยมสูงสุด
+            maxDec = 1; //ทศนิยมสูงสุด
             var countxtInput = 0;
+            calcCount++;
+
             txtInput[0] = $("#area").val();
             txtInput[1] = $("#sideA").val();
             txtInput[2] = $("#sideB").val();
@@ -143,7 +158,16 @@
             }
             $("#triangle").removeClass("animated pulse")
             $("#triangle").addClass("animated pulse")
-
+            $("#history").show();
+            $("#historyTable").append(
+                                        '<tr>' +
+                                            '<td>'+ calcCount +'</td>' +
+                                            '<td>'+ txtInput[0] +'</td>' +
+                                            '<td>'+ txtInput[1] +'</td>' +
+                                            '<td>'+ txtInput[2] +'</td>' +
+                                            '<td>'+ txtInput[3] +'</td>' +
+                                        '</tr>'
+            );
         });
 
         // ------------------- Start Calcuate By Area -------------------------------
@@ -326,9 +350,7 @@
             var area = Math.sqrt(res);
             console.log("area : " + area);
             var areaDec = countDecimals(area);
-            x = area.toString(); //ใช้ toFixed ค่าจะเปลี่ยน
-            //console.log("cut decimal : " +areaDec + " = " + (x.substring(0,((Number(x.length))-areaDec)+maxDec)));
-            $('#resArea').html((x.substring(0,((Number(x.length))-areaDec)+maxDec)));
+            $('#resArea').html(area.toFixed(maxDec));
             $('#resA').html(a);
             $('#resB').html(b);
             $('#resC').html(c);
