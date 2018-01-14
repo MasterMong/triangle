@@ -88,6 +88,8 @@
         var txtInput = Array();
         var message = Array();
         var missSide = "";
+        var maxDec = "";
+        
         /*
             รับค่า
         */
@@ -100,6 +102,7 @@
         $("#calc").click(function(){
             missSide = "";
             txtInput = [];
+            maxDec = 2; //ทศนิยมสูงสุด
             var countxtInput = 0;
             txtInput[0] = $("#area").val();
             txtInput[1] = $("#sideA").val();
@@ -187,6 +190,7 @@
             
             }
             
+            maxDec = decimals;
             var maxDecimal = 9;
             for (i = 1; i <= decimals; i++){
                 maxDecimal += '9';
@@ -203,12 +207,6 @@
             }
             console.log("Max : " + numMax + " Min : " + numMin + "Dec " + decimals);
         }
-
-        countDecimals = function (value) {
-                if(Math.floor(value) === value) return 0;
-                return value.toString().split(".")[1].length || 0; 
-        }
-
 
         function getSideFromGenerate(area, side1, side2, sideX, dec) {
             console.log("fn getAreaAndAngle");
@@ -272,6 +270,11 @@
         }
         // ------------------- End Calcuate By Area -------------------------------
 
+        countDecimals = function (value) { //หาจุดทศนิยม
+                if(Math.floor(value) === value) return 0;
+                return value.toString().split(".")[1].length || 0; 
+        }
+
         function runToastr(type, message, title) {
             toastr[type](message, title)
         }
@@ -315,7 +318,10 @@
             var res = (s*(s-a)*(s-b)*(s-c));
             var area = Math.sqrt(res);
             console.log("area : " + area);
-            $('#resArea').html(area);
+            var areaDec = countDecimals(area);
+            x = area.toString(); //ใช้ toFixed ค่าจะเปลี่ยน
+            //console.log("cut decimal : " +areaDec + " = " + (x.substring(0,((Number(x.length))-areaDec)+maxDec)));
+            $('#resArea').html((x.substring(0,((Number(x.length))-areaDec)+maxDec)));
             $('#resA').html(a);
             $('#resB').html(b);
             $('#resC').html(c);
