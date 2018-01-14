@@ -353,7 +353,7 @@
             var areaDec = countDecimals(area);
             x = area.toString(); //ใช้ toFixed ค่าจะเปลี่ยน
             //console.log("cut decimal : " +areaDec + " = " + (x.substring(0,((Number(x.length))-areaDec)+maxDec)));
-            $('#resArea').html((x.substring(0,((Number(x.length))-areaDec)+maxDec)));
+            $('#resArea').html((x.substring(0,((Number(x.length))-areaDec)+maxDec))+"<sup>2</sup2>");
             $('#resA').html(a);
             $('#resB').html(b);
             $('#resC').html(c);
