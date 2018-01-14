@@ -8,6 +8,7 @@
         
         <script src="assets/js/jquery.min.js"></script>
         <script src="assets/js/toastr.min.js"></script>
+        <title>Triangle Calcuate</title>
     </head>
     <body>
         <div class="container">
@@ -116,7 +117,7 @@
             $("#display").hide();
             missSide = "";
             txtInput = [];
-            maxDec = 1; //ทศนิยมสูงสุด
+            maxDec = 2; //ทศนิยมสูงสุด
             var countxtInput = 0;
             calcCount++;
 
@@ -350,7 +351,9 @@
             var area = Math.sqrt(res);
             console.log("area : " + area);
             var areaDec = countDecimals(area);
-            $('#resArea').html(area.toFixed(maxDec));
+            x = area.toString(); //ใช้ toFixed ค่าจะเปลี่ยน
+            //console.log("cut decimal : " +areaDec + " = " + (x.substring(0,((Number(x.length))-areaDec)+maxDec)));
+            $('#resArea').html((x.substring(0,((Number(x.length))-areaDec)+maxDec)));
             $('#resA').html(a);
             $('#resB').html(b);
             $('#resC').html(c);
