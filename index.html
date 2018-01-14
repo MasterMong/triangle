@@ -138,7 +138,7 @@
 
         });
 
-        // By Area
+        // ------------------- Start Calcuate By Area -------------------------------
 
         function getSideByArea(area,a,b,c) {
             var txtEmpty = getNull(a,b,c);
@@ -180,12 +180,6 @@
 
             var areaLenght = area.length;
             var decimals = 0;
-
-            
-            
-            area = area.toString();
-
-            //console.log((area.match(/\./g) || []).length);
             
             if((area.match(/\./g) || []).length == 1){
                 decimals = countDecimals(area);
@@ -200,7 +194,10 @@
             console.log(maxDecimal);
             for (index = numMin; index < numMax; index++) {
                 for (i = 0; i <= maxDecimal; i++){
-                    getSideFromGenerate(area, side1, side2, index+"."+ i, decimals)
+                    if (getSideFromGenerate(area, side1, side2, index+"."+ i, decimals) == 'stop') {
+                        console.log('stop');
+                        break;
+                    }
                     //console.log(index+"."+i);
                 }
             }
@@ -221,31 +218,59 @@
             var res = (s*(s-side1)*(s-side2)*(s-sideX));
             var result = Math.sqrt(res);
             var x = result.toString();
-            if (x.substring(0,Number(area.length)) == area) {
-                console.log("Missing Side : " + sideX);
-                switch (missSide) {
-                    case 'a':
-                        draw(sideX, side1, side2);
-                        getArea(sideX, side1, side2);
-                        getAngle(sideX, side1, side2);
-                        break;
-                    case 'b':
-                        draw(side1, sideX , side2);
-                        getArea(side1, sideX , side2);
-                        getAngle(side1, sideX , side2);
-                        break;
-                    case 'c':
-                        draw(side1, side2, sideX);
-                        getArea(side1, side2, sideX);
-                        getAngle(side1, side2, sideX);
-                        break;
-                    default:
-                        break;
+            if (dec == 0) {
+                if (x == area) {
+                    console.log("Missing Side : " + sideX);
+                    switch (missSide) {
+                        case 'a':
+                            draw(sideX, side1, side2);
+                            getArea(sideX, side1, side2);
+                            getAngle(sideX, side1, side2);
+                            break;
+                        case 'b':
+                            draw(side1, sideX , side2);
+                            getArea(side1, sideX , side2);
+                            getAngle(side1, sideX , side2);
+                            break;
+                        case 'c':
+                            draw(side1, side2, sideX);
+                            getArea(side1, side2, sideX);
+                            getAngle(side1, side2, sideX);
+                            break;
+                        default:
+                            break;
+                    }
+                    return 'stop';
+                
+                }
+            } else {
+                if (x.substring(0,Number(area.length)) == area) {
+                    console.log("Missing Side : " + sideX);
+                    switch (missSide) {
+                        case 'a':
+                            draw(sideX, side1, side2);
+                            getArea(sideX, side1, side2);
+                            getAngle(sideX, side1, side2);
+                            break;
+                        case 'b':
+                            draw(side1, sideX , side2);
+                            getArea(side1, sideX , side2);
+                            getAngle(side1, sideX , side2);
+                            break;
+                        case 'c':
+                            draw(side1, side2, sideX);
+                            getArea(side1, side2, sideX);
+                            getAngle(side1, side2, sideX);
+                            break;
+                        default:
+                            break;
+                    }
+                    return 'stop';
                 }
             }
             //console.log(result + " area : " + area + " areaLength : " + area.length + " dec : " + dec + " side : " + sideX + " result :  " + x.substring(0,Number(area.length)));
         }
-        // End By Area
+        // ------------------- End Calcuate By Area -------------------------------
 
         function runToastr(type, message, title) {
             toastr[type](message, title)
