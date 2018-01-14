@@ -37,7 +37,7 @@
                     <button id="calc" class="button is-primary">คำนวน</button>
                     <button id="clear" class="button is-warning">ลบ</button>
                 </div>
-                <div class="column" >
+                <div class="column" id="display">
                     <canvas id="triangle" width="450px" height="400px" ></canvas>
                     <div id="output">
                         <table class="table">
@@ -84,7 +84,7 @@
         </div>
     </body>
     <script>
-        $("#output").hide();
+        $("#display").hide();
         var txtInput = Array();
         var message = Array();
         var missSide = "";
@@ -100,6 +100,7 @@
             $("#sideC").val("");
         });
         $("#calc").click(function(){
+            $("#display").hide();
             missSide = "";
             txtInput = [];
             maxDec = 2; //ทศนิยมสูงสุด
@@ -123,7 +124,11 @@
             } else {
                 if (txtInput[0]){
                     console.log("found Area");
-                    getSideByArea(txtInput[0],txtInput[1], txtInput[2], txtInput[3]);
+                    if (txtInput[0] == 0) {
+                        runToastr("error", "ไม่อนุญาติให้ระบุพื้นที่เท่ากับ 0");                        
+                    } else {
+                        getSideByArea(txtInput[0],txtInput[1], txtInput[2], txtInput[3]);
+                    }
 
                 } else {
                     console.log("not found Area");
@@ -195,22 +200,25 @@
             for (i = 1; i <= decimals; i++){
                 maxDecimal += '9';
             }
+            var status = false;
             console.log(maxDecimal);
             for (index = numMin; index < numMax; index++) {
                 for (i = 0; i <= maxDecimal; i++){
                     if (getSideFromGenerate(area, side1, side2, index+"."+ i, decimals) == 'stop') {
-                        console.log('stop');
+                        status = true;
                         break;
                     }
                     //console.log(index+"."+i);
                 }
+            }
+            if (status == false) {
+                runToastr("warning", "ไม่พบผลลัพธ์ เนื่องจากพื้นที่ที่ระบุมานั้นส่งผลให้ด้านที่ค้นหามีความยาวอยู่นอกระยะ " + numMax + " - " + numMin + " หน่วย ซึ่งผลบวกของความยาวของสองด้านใดๆ ในรูปสามเหลี่ยม จะมากกว่าความยาวของด้านที่สามเสมอ ");           
             }
             console.log("Max : " + numMax + " Min : " + numMin + "Dec " + decimals);
         }
 
         function getSideFromGenerate(area, side1, side2, sideX, dec) {
             console.log("fn getAreaAndAngle");
-            $("#output").show();
             //Area
             var s = (Number(side1) + Number(side2) + Number(sideX))/2;
             var res = (s*(s-side1)*(s-side2)*(s-sideX));
@@ -312,7 +320,6 @@
         */
         function getArea(a, b, c) {
             console.log("fn getAreaAndAngle");
-            $("#output").show();
             //Area
             var s = (Number(a) + Number(b) + Number(c))/2;
             var res = (s*(s-a)*(s-b)*(s-c));
@@ -344,10 +351,11 @@
         };
 
         draw = function(a,b,c) {
+            $("#display").show();
             var canvas = $('#triangle')[0];
             var ctx = canvas.getContext('2d');
             ctx.fillStyle = '#FFB900';    // a warm skin tone
-            ctx.strokeStyle = '#CA5010'; 
+            ctx.strokeStyle = '#CA5010';
             ctx.lineWidth = 5;
 
             var scale = 250/((Math.max(a,b,c)));
