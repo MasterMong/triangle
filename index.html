@@ -103,7 +103,7 @@
         var missSide = "";
         var maxDec = "";
         var calcCount = 0;
-        
+
         /*
             รับค่า
         */
@@ -112,9 +112,11 @@
             $("#sideA").val("");
             $("#sideB").val("");
             $("#sideC").val("");
+
         });
         $("#calc").click(function(){
             $("#display").hide();
+            
             missSide = "";
             txtInput = [];
             maxDec = 2; //ทศนิยมสูงสุด
@@ -132,10 +134,10 @@
                 }
             }
             if (countxtInput < 3) {
-                runToastr("warning", "ระบบุตัวเลขให้ครบ 3 ค่า", "ล้มเหลว")
+                runToastr("warning", "ระบุตัวเลขให้ครบ 3 ค่า", "ล้มเหลว")
                 //console.log("Error ระบบุค่าให้ครบ 3 ค่า");
             } else if (countxtInput > 3) {
-                runToastr("warning", "ระบบุตัวเลขไม่ให้เกิน 3 ค่า", "ล้มเหลว")
+                runToastr("warning", "ระบุตัวเลขไม่ให้เกิน 3 ค่า", "ล้มเหลว")
                 //console.log("Error ระบบุค่าไม่ให้เกิน 3 ค่า");
             } else {
                 if (txtInput[0]){
@@ -156,11 +158,8 @@
                         
                     }
                 }
-            }
-            $("#triangle").removeClass("animated pulse")
-            $("#triangle").addClass("animated pulse")
-            $("#history").show();
-            $("#historyTable").append(
+                $("#history").show();
+                $("#historyTable").append(
                                         '<tr>' +
                                             '<td>'+ calcCount +'</td>' +
                                             '<td>'+ txtInput[0] +'</td>' +
@@ -168,7 +167,12 @@
                                             '<td>'+ txtInput[2] +'</td>' +
                                             '<td>'+ txtInput[3] +'</td>' +
                                         '</tr>'
-            );
+                );
+            }
+            $("#triangle").removeClass("animated pulse")
+            $("#triangle").addClass("animated pulse")
+            
+            
         });
 
         // ------------------- Start Calcuate By Area -------------------------------
