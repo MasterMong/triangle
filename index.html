@@ -96,16 +96,16 @@
         </div>
     </body>
     <script>
-        $("#display").hide();
-        $("#history").hide();
-        var txtInput = Array();
-        var message = Array();
-        var missSide = "";
-        var maxDec = "";
-        var calcCount = 0;
+        $("#display").hide(); //ซ่อนส่วนแสดงผล
+        $("#history").hide(); //ซ่วนส่วนประวัติ
+        var txtInput = Array(); //ตัวแปร Array รับค่าจาก input
+        var message = Array();  //ตัวแปร ข้อความ
+        var missSide = "";      //ตัวแปร เก็บด้านที่ผู้ใช้ไม่ได้ระบุ
+        var maxDec = "";        //ตัวแปร ความยาวทศนิยมของพื้นที่
+        var calcCount = 0;      //ตัวแปร เก็บค่าว่าคำนวนมาแล้วกี่ครั้ง ใช้กับประวัติ
 
         /*
-            รับค่า
+            เคลียค่าในกล่องข้อความ
         */
         $("#clear").click(function() {
             $("#area").val("");
@@ -114,41 +114,48 @@
             $("#sideC").val("");
 
         });
+
+        /*
+            รับค่าจากกล่องข้ออความ
+        */
         $("#calc").click(function(){
             $("#display").hide();
             
-            missSide = "";
-            txtInput = [];
-            maxDec = 2; //ทศนิยมสูงสุด
-            var countxtInput = 0;
-            calcCount++;
+            missSide = "";              // เคลียค่า
+            txtInput = [];              // เคลียค่า
+            maxDec = 2;                 // กำหนดความยาวของทศนิยมเป็น 2 หลัก
+            calcCount++;                // index ประวัติ +1
 
-            txtInput[0] = $("#area").val();
+            /*เก็บค่าจาก input มาไว้ในตัวแปร txtInput*/
+            txtInput[0] = $("#area").val(); 
             txtInput[1] = $("#sideA").val();
             txtInput[2] = $("#sideB").val();
             txtInput[3] = $("#sideC").val();
+
             console.log(txtInput);
+
+            /*เช็คว่าผู้ใช้กรอกข้อมูลมากี่ช่อง*/
+            var countxtInput = 0;
             for (i=0; i<4; i++) {
                 if (txtInput[i]) {
                     countxtInput++;
                 }
             }
-            if (countxtInput < 3) {
+            if (countxtInput < 3) {                                 //ถ้าผู้ใช้ระบุน้อยกว่า 3 ค่า
                 runToastr("warning", "ระบุตัวเลขให้ครบ 3 ค่า", "ล้มเหลว")
-                //console.log("Error ระบบุค่าให้ครบ 3 ค่า");
-            } else if (countxtInput > 3) {
+            } else if (countxtInput > 3) {                          //ถ้าผู้ใช้ระบุมากกว่า 3 ค่า
                 runToastr("warning", "ระบุตัวเลขไม่ให้เกิน 3 ค่า", "ล้มเหลว")
-                //console.log("Error ระบบุค่าไม่ให้เกิน 3 ค่า");
-            } else {
-                if (txtInput[0]){
+            } else {                                                //ระบุมา 3 ค่า
+                
+                /*เช็คว่าระบุพื้นที่หรือไม่*/
+                if (txtInput[0]){               //ระบุพื้นที่
                     console.log("found Area");
                     if (txtInput[0] == 0) {
                         runToastr("error", "ไม่อนุญาติให้ระบุพื้นที่เท่ากับ 0");                        
                     } else {
                         getSideByArea(txtInput[0],txtInput[1], txtInput[2], txtInput[3]);
                     }
-
-                } else {
+                } else {                       //ไม่ระบุพื้นที่
                     console.log("not found Area");
                     if (checkSideByABC(txtInput[1], txtInput[2], txtInput[3]) !== true) {
                         draw(txtInput[1], txtInput[2], txtInput[3]);
@@ -175,15 +182,28 @@
             
         });
 
-        // ------------------- Start Calcuate By Area -------------------------------
+        //----------------------- Section หาความยาวด้านที่ 3 โดยใช้พื้นที่ -----------------------------
 
+        /* 
+            function getNull หาด้านที่ผู้ใช้ไม่ได้ระบุ
+        */
+        function getNull(a,b,c) {
+            if (a == ""){return "a"}
+            if (b == ""){return "b"}
+            if (c == ""){return "c"}  
+        }
+
+        /* 
+            function getSideByArea ส่งค่าที่ผู้ใช้ไม่ได้ระบุไปให้ฟังก์ชั่น getSideLenght
+        */
         function getSideByArea(area,a,b,c) {
-            var txtEmpty = getNull(a,b,c);
+            var txtEmpty = getNull(a,b,c);      // ส่งไปให้ fn getNull หาด้านที่ผู้ใช้ไม่ได้ระบุ
             console.log("empty : " + txtEmpty);
-            switch (txtEmpty) {
-                case 'a':
-                    missSide = "a";
-                    getSideLenght(area,b,c);
+
+            switch (txtEmpty) {                 // ระบุด้านที่ผู้ใช้ไม่ได้ระบุ(a,b,c)ไว้ในตัวแปร missSide และ
+                case 'a':                       // ส่งค่า   1. พื้นที่
+                    missSide = "a";             //        2. ด้านที่ 1
+                    getSideLenght(area,b,c);    //        3. ด้านที่ 2
                     
                     break;
                 case 'b':
@@ -200,13 +220,9 @@
             
         }
 
-        function getNull(a,b,c) {
-            if (a == ""){return "a"}
-            if (b == ""){return "b"}
-            if (c == ""){return "c"}  
-        }
+        function getSideLenght(area,side1,side2) { //หาสร้างตัวเลขไปเทียบหาพื้นที่ ถ้ารู้วิธีคำนวนหาด้านที่ 3 ให้ลบโค๊ดใน function นี้ออกแล้วใส่สูตรของตนเอง
 
-        function getSideLenght(area,side1,side2) { //หาสร้างตัวเลขไปเทียบหาพื้นที่
+            // --------- หาความยาวของด้านที่ 3 ว่าจะไม่ต่ำและไม่เกินเท่าไหร่ ---------
             if (side1 > side2){
                 var numMin = Number(side1) - Number(side2);
                 var numMax = Number(side1) + Number(side2);
@@ -214,48 +230,53 @@
                 var numMin = Number(side2) - Number(side1);
                 var numMax = Number(side2) + Number(side1);
             }
+            // -------------------------------------------------------------
 
-            var areaLenght = area.length;
-            var decimals = 0;
-            
-            if((area.match(/\./g) || []).length == 1){
-                decimals = countDecimals(area);
-            } else {
-            
+            var areaLenght = area.length;                   // หาความยาวของ String
+            maxDec = 0;                                     // ตั้งให้ความยาวจุดทศนิยมของ area เท่ากับ 0 ไปก่อน
+            if((area.match(/\./g) || []).length == 1){      // ตรวจสอบว่ามีจุดทศนิยมหรือไม่
+                maxDec = countDecimals(area);               // ถ้ามีจุดทศนิยม ให้ funciton countDecimals หาความยาวของจุดทศนิยมแล้วเก็บไว้ในตัวแปร decimals
+            } 
+                            
+            var maxDecToCal = 9;                            // ค่าทศนิยมสูงที่ทีนำไปคำนวนใน loop เช่น 10.9999
+            for (i = 1; i <= maxDec; i++){
+                maxDecToCal += '9';                         // เพิ่มเลข 9 ไว้หลัง string เช่น 9 + 9 = 99
             }
-            
-            maxDec = decimals;
-            var maxDecimal = 9;
-            for (i = 1; i <= decimals; i++){
-                maxDecimal += '9';
-            }
-            var status = false;
-            console.log(maxDecimal);
-            for (index = numMin; index < numMax; index++) {
-                for (i = 0; i <= maxDecimal; i++){
-                    if (getSideFromGenerate(area, side1, side2, index+"."+ i, decimals) == 'stop') {
+
+            var status = false;                             // status = false คือ คำนวนหาความยาวด้านที่ 3 ไม่ได้ อาจเนื่องจากพื้นที่ที่ระบุมานั้นส่งผลให้ด้านที่ค้นหามีความยาวอยู่นอกระยะ
+            console.log(maxDecToCal);
+
+            // สร้่งตัวเลขไปให้ getSideFromGenerate คำนวนเทียบกันว่า area นั้นมีค่าตรงกันกะบที่ผู้ใช้ระบุหรือไม่
+            for (index = numMin; index < numMax; index++) { // loop จำนวนเต็ม โดย i เอามาจาก numMin - numMax เช่น 2 - 7
+                for (i = 0; i <= maxDecToCal; i++){         // loop จำนวนจริง โดย i คือทศนิยม 0 - maxDecToCal 
+                    if (getSideFromGenerate(area, side1, side2, index+"."+ i, maxDec) == 'stop') {
                         status = true;
                         break;
                     }
                     //console.log(index+"."+i);
+                    // ถ้าอยากใด้ค่าเดียวให้ใส่เบรกตรงนี้ และถ้าอยากให้แสดงหลาย ๆ ค่าให้สร้างตัวแปรมาเก็บแล้วไปแสดงผลให้ผู้ใะช้คลิก
                 }
             }
+
             if (status == false) {
                 runToastr("warning", "ไม่พบผลลัพธ์ เนื่องจากพื้นที่ที่ระบุมานั้นส่งผลให้ด้านที่ค้นหามีความยาวอยู่นอกระยะ " + numMax + " - " + numMin + " หน่วย ซึ่งผลบวกของความยาวของสองด้านใดๆ ในรูปสามเหลี่ยม จะมากกว่าความยาวของด้านที่สามเสมอ ");           
             }
-            console.log("Max : " + numMax + " Min : " + numMin + "Dec " + decimals);
+            console.log("Max : " + numMax + " Min : " + numMin + "Dec " + maxDec);
         }
 
+        /*
+            function getSideFromGenerate นำตัวเลขที่สร้างขึ้นมาคำนวนเทียบกับพื้นที่ที่ผู้ใช้ระบุ เมื่อตรงกันให้ return stop
+        */
         function getSideFromGenerate(area, side1, side2, sideX, dec) {
             console.log("fn getAreaAndAngle");
-            //Area
+            // หาพื้นที่ โดยนำ ด้านที่ 1 ด้านที่ 2 และด้านที่x(ตัวเลขที่สร้างขึ้น) มาคำนวนเพื่อไปเทียบกับที่ผู้ใช้ระบุว่าตรงกันหรือไม่
             var s = (Number(side1) + Number(side2) + Number(sideX))/2;
             var res = (s*(s-side1)*(s-side2)*(s-sideX));
             var result = Math.sqrt(res);
-            var x = result.toString();
-            if (dec == 0) {
-                if (x == area) {
-                    console.log("Missing Side : " + sideX);
+            var x = result.toString();  // ผลลัพธ์ (พื้นที่ที่จะนำไปเทียบ)
+            if (dec == 0) {             // เช็คว่ามีทศนิยมหรือไม่ = 0 คือไม่มี
+                if (x == area) {        // ถ้า x ตรงกับผู้ใช้ระบุ
+                    console.log("Missing Side : " + sideX); // แสดงด้านที่พบใน console
                     switch (missSide) {
                         case 'a':
                             draw(sideX, side1, side2);
@@ -279,8 +300,8 @@
                 
                 }
             } else {
-                if (x.substring(0,Number(area.length)) == area) {
-                    console.log("Missing Side : " + sideX);
+                if (x.substring(0,Number(area.length)) == area) {   // ถ้า x ตรงกับผู้ใช้ระบุ
+                    console.log("Missing Side : " + sideX); // แสดงด้านที่พบใน console
                     switch (missSide) {
                         case 'a':
                             draw(sideX, side1, side2);
@@ -305,38 +326,38 @@
             }
             //console.log(result + " area : " + area + " areaLength : " + area.length + " dec : " + dec + " side : " + sideX + " result :  " + x.substring(0,Number(area.length)));
         }
-        // ------------------- End Calcuate By Area -------------------------------
-
         countDecimals = function (value) { //หาจุดทศนิยม
                 if(Math.floor(value) === value) return 0;
                 return value.toString().split(".")[1].length || 0; 
         }
+        // ------------------- End Section หาความยาวด้านที่ 3 โดยใช้พื้นที่ -------------------------------
 
         function runToastr(type, message, title) {
             toastr[type](message, title)
         }
 
         /*
-            ผลบวกของความยาวของสองด้านใดๆ ในรูปสามเหลี่ยม จะมากกว่าความยาวของด้านที่สามเสมอ 
+            function checkSideByABC ตรวจสอบความยาวของทั้ง 3 ด้านว่าสามารถนำไปสร้างสามเหลี่ยมได้หรือไม่ ถ้าพบ error ให้ return true ถ้าไม่พบ return false
+            "ผลบวกของความยาวของสองด้านใดๆ ในรูปสามเหลี่ยม จะมากกว่าความยาวของด้านที่สามเสมอ"
         */
 
         function checkSideByABC(a, b, c){
             message['error'] = "";
             console.log("fn checkSideByABC");
-            if ((Number(b)+Number(c)) <= Number(a)){
+            if ((Number(b)+Number(c)) <= Number(a)){    // b + c ต้องไม่น้อยกว่า a
                 message['error'] += "A";                
             }
-            if ((Number(a)+Number(c)) <= Number(b)){
+            if ((Number(a)+Number(c)) <= Number(b)){    // a + c ต้องไม่น้อยกว่า b
                 message['error'] += "B";                
             }
-            if ((Number(a)+Number(b)) <= Number(c)){
+            if ((Number(a)+Number(b)) <= Number(c)){    // a + b ต้องไม่น้อยกว่า c
                 message['error'] += "C";                
             }
-            if (a < 0 || b < 0 || c < 0) {
+            if (a < 0 || b < 0 || c < 0) {              // ความยาวของด้าน A B C ต้องไม่น้อยกว่า 0
                 message['error'] += "<0";  
             }
-            console.log(message['error']);
-            if (message['error']) {
+            console.log(message['error']);              
+            if (message['error']) {                     // ตรวจสอบว่าพบ error หรือไม่
                 runToastr("error", "ค่าที่คุณระบุไม่สามารถสร้างเป็นรูปสามเหลี่ยมได้ ผลบวกของความยาวของสองด้านใดๆ ในรูปสามเหลี่ยม จะมากกว่าความยาวของด้านที่สามเสมอ", "ล้มเหลว")
                 return true;
             } else {
@@ -345,7 +366,7 @@
         }
 
         /*
-            หาพื้นที่
+            หาพื้นที่ โดยการนำ A B C มาคำนวน
         */
         function getArea(a, b, c) {
             console.log("fn getAreaAndAngle");
@@ -355,15 +376,19 @@
             var area = Math.sqrt(res);
             console.log("area : " + area);
             var areaDec = countDecimals(area);
-            x = area.toString(); //ใช้ toFixed ค่าจะเปลี่ยน
+            x = area.toString();
             //console.log("cut decimal : " +areaDec + " = " + (x.substring(0,((Number(x.length))-areaDec)+maxDec)));
-            $('#resArea').html((x.substring(0,((Number(x.length))-areaDec)+maxDec))+"<sup>2</sup2>");
-            $('#resA').html(a);
-            $('#resB').html(b);
-            $('#resC').html(c);
+
+            $('#resArea').html((x.substring(0,((Number(x.length))-areaDec)+maxDec))+"<sup>2</sup2>"); //นำค่าไปแสดงผลใน id resArea และตัดทศนิยมให้มีความยาวตามตัวแปร maxDec โดยไม่ปัดขึ้นหรือลง
+            $('#resA').html(a);     //นำค่าไปแสดงผลใน id resA 
+            $('#resB').html(b);     //นำค่าไปแสดงผลใน id resB 
+            $('#resC').html(c);     //นำค่าไปแสดงผลใน id resC 
             
         }
 
+        /*
+            หาความกว้างของมุม โดยการนำ A B C มาคำนวน
+        */
         function getAngle(c,a,b) { //ต้องสลับ
             var cosA = ((b*b)+(c*c)-(a*a))/(2*(b*c));
             var cosB = ((a*a)+(c*c)-(b*b))/(2*(a*c));
@@ -372,13 +397,17 @@
             $('#angleB').html(((Math.acos(cosB))*180/Math.PI));
             $('#angleC').html(((Math.acos(cosC))*180/Math.PI));
         }
+
+
+        /*
+            function draw นำความยาวของ a b c มาวาดเป็นสามเหลี่ยม
+        */
         getCoordinates = function(a, b, c) {
             var bsq = b*b;
             var x = (bsq - c*c) / (2.0 * a) + a / 2.0;
             var xsq = x*x;
             return (xsq < bsq) ? {x: x, y: Math.sqrt(bsq - xsq)} : null;
         };
-
         draw = function(a,b,c) {
             $("#display").show();
             var canvas = $('#triangle')[0];
@@ -472,7 +501,8 @@
             console.log();
         }
         */
-        toastr.options = {
+        
+        toastr.options = { //ตั้งค่าการแจ้งเตือน
             "closeButton": true,
             "debug": false,
             "newestOnTop": false,
